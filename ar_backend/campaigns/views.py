@@ -26,3 +26,13 @@ class ActiveCampaignView(APIView):
         )
 
         return Response(serializer.data)
+
+
+from django.views.generic import RedirectView
+
+class QRRedirectView(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        host = self.request.get_host().split(':')[0]
+        return f"http://{host}:5173/"

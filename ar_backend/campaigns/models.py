@@ -53,10 +53,13 @@ class Campaign(models.Model):
 
     def clean(self):
         if self.video:
-            if self.video.size > self.MAX_VIDEO_SIZE_BYTES:
-                raise ValidationError(
-                    "Video must be below 100 MB."
-                )
+            try:
+                if self.video.size > self.MAX_VIDEO_SIZE_BYTES:
+                    raise ValidationError(
+                        "Video must be below 100 MB."
+                    )
+            except FileNotFoundError:
+                pass
 
             ext = os.path.splitext(
                 self.video.name

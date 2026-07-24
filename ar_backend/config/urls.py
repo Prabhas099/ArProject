@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from campaigns.views import QRRedirectView
 
 urlpatterns = [
     path(
@@ -30,6 +31,11 @@ urlpatterns = [
     path(
         'api/campaigns/',
         include('campaigns.urls')
+    ),
+    path(
+        'ar/<uuid:campaign_id>/',
+        QRRedirectView.as_view(),
+        name='qr_redirect'
     ),
 ]
 
