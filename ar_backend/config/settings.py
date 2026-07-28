@@ -25,10 +25,16 @@ SECRET_KEY = 'django-insecure-dqqww8=_+$l2%99cok-5!r1&e#!)mcu!0clswu1_f#b!*rhs74
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "arproject-iike.onrender.com",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://arproject-frontend.onrender.com",
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://arproject-iike.onrender.com",
+    "https://arproject-frontend.onrender.com",
 ]
 
 
