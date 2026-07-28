@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import axios from "axios";
 
+const API_URL = "https://arproject-iike.onrender.com";
+
 function ARScanner() {
     const initialized = useRef(false);
     const currentMindar = useRef(null);
@@ -64,7 +66,7 @@ function ARScanner() {
         try {
 
             const response = await axios.get(
-                "http://127.0.0.1:8000/api/campaigns/"
+                `${API_URL}/api/campaigns/`
             );
 
             const campaigns = response.data.filter(
@@ -92,7 +94,7 @@ function ARScanner() {
                         ),
 
                     imageTargetSrc:
-                        `http://127.0.0.1:8000/media/targets_mind/campaigns.mind?t=${Date.now()}`
+                        `${API_URL}/media/targets_mind/campaigns.mind?t=${Date.now()}`
                 });
 
             currentMindar.current =
