@@ -12,11 +12,19 @@ async function compileTargets() {
   console.log(`Starting compilation of ${imagePaths.length} target images...`);
 
   // Launch Google Chrome headlessly
-  const browser = await puppeteer.launch({
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  const launchOptions = {
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+  };
+
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  } else if (process.platform === 'win32') {
+    launchOptions.executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  }
+
+  const browser = await puppeteer.launch(launchOptions);
+
 
   try {
     const page = await browser.newPage();
