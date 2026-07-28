@@ -1,6 +1,6 @@
-const puppeteer = require('puppeteer-core');
-const path = require('path');
-const fs = require('fs');
+import { launch } from 'puppeteer-core';
+import { join, extname } from 'path';
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'fs';
 
 async function compileTargets() {
   const imagePaths = process.argv.slice(2);
@@ -23,32 +23,32 @@ async function compileTargets() {
     launchOptions.executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
   }
 
-  const browser = await puppeteer.launch(launchOptions);
+  const browser = await launch(launchOptions);
 
 
   try {
     const page = await browser.newPage();
-    
+
     // Relay console logs from Chrome page to Node terminal
     page.on('console', msg => {
       console.log('BROWSER:', msg.text());
     });
 
     // Read local MindAR compiler bundle
-    const scriptPath = path.join(__dirname, '..', '..', 'ar_frontend', 'node_modules', 'mind-ar', 'dist', 'mindar-image.prod.js');
-    if (!fs.existsSync(scriptPath)) {
+    const scriptPath = join(__dirname, '..', '..', 'ar_frontend', 'node_modules', 'mind-ar', 'dist', 'mindar-image.prod.js');
+    if (!existsSync(scriptPath)) {
       throw new Error(`MindAR compiler script not found at: ${scriptPath}`);
     }
-    const scriptContent = fs.readFileSync(scriptPath, 'utf8');
+    const scriptContent = readFileSync(scriptPath, 'utf8');
 
     // Inject the compiler script into the browser context
     await page.evaluate(scriptContent);
 
     // Read and convert input images to Base64 data URLs
     const imagesBase64 = imagePaths.map(p => {
-      const extension = path.extname(p).toLowerCase().replace('.', '');
+      const extension = extname(p).toLowerCase().replace('.', '');
       const mimeType = extension === 'png' ? 'image/png' : 'image/jpeg';
-      const content = fs.readFileSync(p);
+      const content = readFileSync(p);
       return `data:${mimeType};base64,${content.toString('base64')}`;
     });
 
@@ -78,7 +78,7 @@ async function compileTargets() {
 
         console.log("Exporting compiled targets data...");
         const buffer = compiler.exportData();
-        
+
         // Return as regular array of numbers to safely transfer across the Puppeteer boundary
         return { success: true, data: Array.from(buffer) };
       } catch (err) {
@@ -92,13 +92,13 @@ async function compileTargets() {
     }
 
     // Save output target file
-    const outputFolder = path.join(__dirname, '..', 'media', 'targets_mind');
-    if (!fs.existsSync(outputFolder)) {
-      fs.mkdirSync(outputFolder, { recursive: true });
+    const outputFolder = join(__dirname, '..', 'media', 'targets_mind');
+    if (!existsSync(outputFolder)) {
+      mkdirSync(outputFolder, { recursive: true });
     }
-    const outputPath = path.join(outputFolder, 'campaigns.mind');
-    
-    fs.writeFileSync(outputPath, Buffer.from(compiledData.data));
+    const outputPath = join(outputFolder, 'campaigns.mind');
+
+    writeFileSync(outputPath, Buffer.from(compiledData.data));
     console.log(`Successfully compiled and saved MindAR target file to: ${outputPath}`);
 
   } catch (error) {
