@@ -30,11 +30,12 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://arproject-frontend.onrender.com",
+   "https://arproject-frontend.onrender.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://arproject-frontend.onrender.com",
+    "https://arproject-iike.onrender.com",
+    "https://arproject-frontend.onrender.com"
 ]
 
 
@@ -54,10 +55,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
